@@ -12,37 +12,151 @@
 </body>
 
 <template name="index">
-    <button id="loadData">Refresh Reports</button>
-    <button id="mineData">Mine Data</button>
-    <table class="table table-condensed">
-        <thead>
-        <tr>
-            <th>Key</th>
-            <th>Headline</th>
-            <th>Date</th>
-            <th>Station</th>
-        </tr>
-        </thead>
-        {{#each reports}}
-            {{>report}}
-        {{/each}}
-    </table>
+    {{#if isLoading}}
+        {{>loading}}
+    {{else}}
+        <button id="loadData">Refresh Reports</button>
+        <button id="mineData">Mine Data</button>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-4">Headline</div>
+                <div class="col-xs-3">Date</div>
+                <div class="col-xs-3">Station</div>
+                <div class="col-xs-2">Processed</div>
+            </div>
+            {{#each reports}}
+                {{>report}}
+            {{/each}}
+        </div>
+    {{/if}}
 </template>
 
 <template name="report">
-    <tr>
-        <td>{{key}}</td>
-        <td>{{headline}}</td>
-        <td>{{station}}</td>
-        <td>{{date}}</td>
-        <td><a href="/details/{{_id}}">Details</a></td>
-    </tr>
+    <div class="row">
+        <div class="col-xs-4">{{headline}}</div>
+        <div class="col-xs-3">{{date}}</div>
+        <div class="col-xs-3">{{station}}</div>
+        <div class="col-xs-1">{{processed}}</div>
+        <div class="col-xs-1">
+            <a href="/details/{{_id}}">Details</a>
+            <a href="https://www.polizei.bayern.de/bepo/news/presse/aktuell/index.html/{{key}}"
+               target="_blank">Original</a>
+        </div>
+    </div>
 </template>
 
 <template name="details">
     {{#with report}}
+        <a href="/">Back</a>
         <h1>{{headline}}</h1>
+
         <h2>{{date}}, Station: {{station}}</h2>
+
         <p>{{{text}}}</p>
+
+        <h3>Tags:</h3>
+
+        <p>
+            {{#each tags}}
+                {{this}}
+            {{/each}}
+        </p>
     {{/with}}
+</template>
+
+<template name="loading">
+    <style>
+        .sk-cube-grid {
+            width: 40px;
+            height: 40px;
+            margin: 100px auto;
+        }
+
+        .sk-cube-grid .sk-cube {
+            width: 33%;
+            height: 33%;
+            background-color: #333;
+            float: left;
+            -webkit-animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+            animation: sk-cubeGridScaleDelay 1.3s infinite ease-in-out;
+        }
+
+        .sk-cube-grid .sk-cube1 {
+            -webkit-animation-delay: 0.2s;
+            animation-delay: 0.2s;
+        }
+
+        .sk-cube-grid .sk-cube2 {
+            -webkit-animation-delay: 0.3s;
+            animation-delay: 0.3s;
+        }
+
+        .sk-cube-grid .sk-cube3 {
+            -webkit-animation-delay: 0.4s;
+            animation-delay: 0.4s;
+        }
+
+        .sk-cube-grid .sk-cube4 {
+            -webkit-animation-delay: 0.1s;
+            animation-delay: 0.1s;
+        }
+
+        .sk-cube-grid .sk-cube5 {
+            -webkit-animation-delay: 0.2s;
+            animation-delay: 0.2s;
+        }
+
+        .sk-cube-grid .sk-cube6 {
+            -webkit-animation-delay: 0.3s;
+            animation-delay: 0.3s;
+        }
+
+        .sk-cube-grid .sk-cube7 {
+            -webkit-animation-delay: 0s;
+            animation-delay: 0s;
+        }
+
+        .sk-cube-grid .sk-cube8 {
+            -webkit-animation-delay: 0.1s;
+            animation-delay: 0.1s;
+        }
+
+        .sk-cube-grid .sk-cube9 {
+            -webkit-animation-delay: 0.2s;
+            animation-delay: 0.2s;
+        }
+
+        @-webkit-keyframes sk-cubeGridScaleDelay {
+            0%, 70%, 100% {
+                -webkit-transform: scale3D(1, 1, 1);
+                transform: scale3D(1, 1, 1);
+            }
+            35% {
+                -webkit-transform: scale3D(0, 0, 1);
+                transform: scale3D(0, 0, 1);
+            }
+        }
+
+        @keyframes sk-cubeGridScaleDelay {
+            0%, 70%, 100% {
+                -webkit-transform: scale3D(1, 1, 1);
+                transform: scale3D(1, 1, 1);
+            }
+            35% {
+                -webkit-transform: scale3D(0, 0, 1);
+                transform: scale3D(0, 0, 1);
+            }
+        }
+    </style>
+    <div class="sk-cube-grid">
+        <div class="sk-cube sk-cube1"></div>
+        <div class="sk-cube sk-cube2"></div>
+        <div class="sk-cube sk-cube3"></div>
+        <div class="sk-cube sk-cube4"></div>
+        <div class="sk-cube sk-cube5"></div>
+        <div class="sk-cube sk-cube6"></div>
+        <div class="sk-cube sk-cube7"></div>
+        <div class="sk-cube sk-cube8"></div>
+        <div class="sk-cube sk-cube9"></div>
+    </div>
 </template>

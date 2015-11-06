@@ -1,9 +1,4 @@
-function keyFromLink(path) {
-    var s = (path).match(/\d{5,6}/);
-    return (s ? s[0] : false);
-}
-
-function getIds(url) {
+getIds = function(url) {
     Meteor.call('getHTML', url, function (err, content) {
         if(err){
             console.error(500, err);
@@ -24,6 +19,12 @@ function getIds(url) {
             });
         }
     });
+};
+
+
+function keyFromLink(path) {
+    var s = (path).match(/\d{5,6}/);
+    return (s ? s[0] : false);
 }
 
 function getText(key) {
@@ -57,18 +58,10 @@ function getText(key) {
             headline: headline,
             text: textArray.join(' '),
             station: station,
-            date: date
+            date: date,
+            processed: 'False',
+            tags: []
         });
     });
 }
 
-Template.index.events({
-    'click #loadData': function () {
-        Meteor.call('empty', function () {
-            var max = 20;
-            for (var i = 0; i <= max - 10; i += 10) {
-                getIds(`https://www.polizei.bayern.de/bepo/news/presse/archiv/index.html?type=archiv&rubid=rub-4&query=&submit=Suchen%21&periodselect=All&period=fromto&periodfrom=01.10.2014&periodto=31.10.2015&start=${i}`);
-            }
-        });
-    }
-});
