@@ -1,0 +1,33 @@
+<head>
+    <title>hello</title>
+</head>
+
+<body>
+<h1>PoliceReport</h1>
+
+{{> index}}
+</body>
+
+<template name="index">
+    <button>Aktualisieren</button>
+    <table class="table table-condensed">
+        <thead>
+        <tr>
+            <th>Key</th>
+            <th>Headline</th>
+            <th>Text</th>
+        </tr>
+        </thead>
+        {{#each reports}}
+            {{>report}}
+        {{/each}}
+    </table>
+</template>
+
+<template name="report">
+    <tr>
+        <td>{{key}}</td>
+        <td>{{headline}}</td>
+        <td>{{text}}</td>
+    </tr>
+</template>
