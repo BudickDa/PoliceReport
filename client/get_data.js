@@ -48,7 +48,6 @@ function getText(key) {
             var station = '', date = '',
             dateAndStationArray = dateAndStation.split(', PP ');
             if(dateAndStationArray.length===2){
-                console.log(dateAndStationArray[0]);
                 date = moment(dateAndStationArray[0], 'DD.MM.YYYY').toISOString();
                 station = dateAndStationArray[1];
             }

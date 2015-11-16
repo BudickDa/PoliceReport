@@ -1,14 +1,14 @@
-tags = [
+Tags = [
     {
-        tag: 'Einbruch',
+        name: 'Einbruch',
         keywords: [
             'Einbruch', 'Einbrecher', 'Einbrüche'
         ]
     },
     {
-        tag: 'Diebstahl',
+        name: 'Diebstahl',
         keywords: [
-            'gestohlener', 'gestohlene', 'Gestohlener', 'Gestohlene', 'Diebstahl', 'Dieb', 'Diebe'
+            'Gestohlen', 'Diebstahl', 'Dieb', 'Diebe', 'Stehlen'
         ]
     }
 ];
@@ -16,25 +16,9 @@ tags = [
 
 tagData = function () {
     Reports.find().forEach((doc)=> {
-        var found;
         Reports.update(doc._id, {$set: {processed: 'In Progress'}});
-        tags.forEach((tagObject)=> {
-            found = false;
-            tagObject.keywords.forEach((keyword)=> {
-                    if (found) {
-                        return;
-                    }
-                    if (doc.headline.includes(keyword)) {
-                        found = true;
-                    } else if (doc.text.includes(keyword)) {
-                        found = true;
-                    }
-                    if (found) {
-                        Reports.update(doc._id, {$push: {tags: tagObject.tag}});
-                    }
-                }
-            );
-        });
+        var tags = Tentacula.tagText(doc.headline, doc.text, Tags);
+        Reports.update(doc._id, {$push: {tags: tags}});
         Reports.update(doc._id, {$set: {processed: 'Tagged'}});
     });
 }
