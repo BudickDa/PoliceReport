@@ -4,8 +4,10 @@
 
 
 <template name="mainLayout">
-    <h1>PoliceReport</h1>
-    {{>Template.dynamic template=content}}
+    <div class="container">
+        <h1>PoliceReport</h1>
+        {{>Template.dynamic template=content}}
+    </div>
 </template>
 <body>
 
@@ -48,6 +50,7 @@
 <template name="details">
     {{#with report}}
         <a href="/">Back</a>
+
         <h1>{{headline}}</h1>
 
         <h2>{{date}}, Station: {{station}}</h2>
