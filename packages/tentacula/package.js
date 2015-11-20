@@ -16,7 +16,7 @@ Package.onUse(function(api) {
   api.addFiles('tentacula.js');
 
 
-  api.export('Tentacula', ['client','server']);
+  api.export('Tentacula', 'server');
 });
 
 
@@ -27,3 +27,10 @@ Package.onTest(function(api) {
   api.use('tentacula');
   api.addFiles('tentacula-tests.js');
 });
+
+
+Npm.depends({
+  'snowball-german': '1.0.0',
+  'word2vec': '0.9.2'
+});
+

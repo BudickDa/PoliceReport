@@ -26,7 +26,7 @@ Template.details.helpers({
  */
 Template.index.events({
     'click #mineData': function(){
-        tagData();
+        Meteor.call('tagData');
     },
     'click #loadData': function () {
         Meteor.call('empty', function () {
