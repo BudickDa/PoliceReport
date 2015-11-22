@@ -75,7 +75,7 @@ class TentaculaClass {
     }
 
     static learnFromText(text, callback) {
-        var dir = path.dirname('w2v/');
+        var dir = path.dirname('/w2v/');
         var inputPath = path.join(dir, 'input.txt');
         //write text to file:
         fs.closeSync(fs.openSync(inputPath, 'w'));
@@ -91,10 +91,11 @@ class TentaculaClass {
         W2V.word2vec(inputPath, vectorPath, callback);
     }
 
-    static loadModel(){
-        var dir = path.dirname('w2v/'),
-            vectorPath = path.join(dir, 'vector-1.txt');
-        return W2V.loadModel(vectorPath);
+    static loadModel(callback){
+        var dir = path.dirname('/w2v/'),
+            vectorPath = path.join(dir, 'vector-1.txt'),
+            newVectorModel = W2V.loadModel();
+        newVectorModel.readTxtFile(vectorPath, callback);
     }
 }
 Tentacula = TentaculaClass;

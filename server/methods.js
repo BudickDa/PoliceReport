@@ -55,15 +55,20 @@ Meteor.methods({
         });
     },
     tagData: function () {
-        var WordModel = new Tentacula.loadModel();
-        console.log(WordModel);
+        Tentacula.loadModel(function(wordModel){
+            var wordVectors = wordModel.getVectors(['Unterfranken', 'Polizeistation', 'Polizeiinspektion']);
+            var result = wordVectors[0].subtract( wordVectors[1] ).add( wordVectors[2] );
+            console.log( wordModel.getNearestWords(result, 10 ) );
+        });
 
+
+        /*
         Reports.find().forEach((doc)=> {
             Reports.update(doc._id, {$set: {processed: 'In Progress'}});
             var tags = Tentacula.tagText(doc.headline, doc.text, Tags);
             Reports.update(doc._id, {$push: {tags: tags}});
             Reports.update(doc._id, {$set: {processed: 'Tagged'}});
-        });
+        });*/
     },
     learn: function(){
         var text = '';

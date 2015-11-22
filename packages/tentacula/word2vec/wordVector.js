@@ -9,19 +9,25 @@ class WordVectorClass {
         this.word = word;
         this.values = values;
     }
-    add(word) {
-        var values = this.values.map((w, i)=>{
-            w += word.values[i];
-            return w;
-        });
-        return new WordVector(null, values);
+
+    add(wordVector) {
+        if (wordVector instanceof WordVector) {
+            var values = this.values.map((word, i)=> {
+                word += wordVector.values[i];
+                return word;
+            });
+            return new WordVector(null, values);
+        }
     };
-    subtract(word) {
-        var values = this.values.map((w, i)=> {
-            w -= word.values[i];
-            return w;
-        });
-        return new WordVector(null, values);
+
+    subtract(wordVector) {
+        if (wordVector instanceof WordVector) {
+            var values = this.values.map((word, i)=> {
+                word -= wordVector.values[i];
+                return word;
+            });
+            return new WordVector(null, values);
+        }
     }
 }
 WordVector = WordVectorClass;

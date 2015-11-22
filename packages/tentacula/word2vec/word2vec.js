@@ -39,16 +39,10 @@ class Word2VectorClass {
         });
     }
 
-    static loadModel(file, callback) {
-        if (typeof file !== 'string') {
-            throw new Meteor.Error('Parameter file has to be a path to a txt-file as a string.');
-        }
-        return new Model(file);
+    static loadModel() {
+        var newModel =  new Model();
+        return newModel;
     }
-
-    static WordVector() {
-        return WordVector;
-    };
 
 }
 
