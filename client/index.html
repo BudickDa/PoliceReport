@@ -14,11 +14,13 @@
 </body>
 
 <template name="index">
+    <button id="loadData">Refresh Reports</button>
+    <button id="learn">Learn</button>
+    <button id="mineData">Mine Data</button>
     {{#if isLoading}}
+        {{counter}}
         {{>loading}}
     {{else}}
-        <button id="loadData">Refresh Reports</button>
-        <button id="mineData">Mine Data</button>
         <div class="container-fluid">
             <div class="row">
                 <div class="col-xs-4">Headline</div>
@@ -36,12 +38,13 @@
 <template name="report">
     <div class="row">
         <div class="col-xs-4">{{headline}}</div>
-        <div class="col-xs-3">{{date}}</div>
-        <div class="col-xs-3">{{station}}</div>
+        <div class="col-xs-2">{{date timestamp}}</div>
+        <div class="col-xs-2">{{location}}</div>
+        <div class="col-xs-2">{{station}}</div>
         <div class="col-xs-1">{{processed}}</div>
         <div class="col-xs-1">
             <a href="/details/{{_id}}">Details</a>
-            <a href="https://www.polizei.bayern.de/bepo/news/presse/aktuell/index.html/{{key}}"
+            <a href="{{url}}"
                target="_blank">Original</a>
         </div>
     </div>
