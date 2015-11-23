@@ -45,8 +45,5 @@ Template.index.events({
                 });
             }
         });
-    },
-    'click #learn': function () {
-        Meteor.call('learn');
     }
 });

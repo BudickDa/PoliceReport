@@ -3,10 +3,8 @@
  */
 MAX = 100;
 
-
 var childProcess = Npm.require('child_process');
 var path = Npm.require('path');
-
 class Word2VectorClass {
     static word2vec(input, output, callback) {
         if (_.isString(input) === false || _.isString(output) === false) {
@@ -38,12 +36,6 @@ class Word2VectorClass {
             }
         });
     }
-
-    static loadModel() {
-        var newModel =  new Model();
-        return newModel;
-    }
-
 }
 
-W2V = Word2VectorClass;
+W2V.Word2Vector = Word2VectorClass;

@@ -11,23 +11,23 @@ class WordVectorClass {
     }
 
     add(wordVector) {
-        if (wordVector instanceof WordVector) {
+        if (wordVector instanceof W2V.WordVector) {
             var values = this.values.map((word, i)=> {
                 word += wordVector.values[i];
                 return word;
             });
-            return new WordVector(null, values);
+            return new W2V.WordVector(null, values);
         }
     };
 
     subtract(wordVector) {
-        if (wordVector instanceof WordVector) {
+        if (wordVector instanceof W2V.WordVector) {
             var values = this.values.map((word, i)=> {
                 word -= wordVector.values[i];
                 return word;
             });
-            return new WordVector(null, values);
+            return new W2V.WordVector(null, values);
         }
     }
 }
-WordVector = WordVectorClass;
+W2V.WordVector = WordVectorClass;

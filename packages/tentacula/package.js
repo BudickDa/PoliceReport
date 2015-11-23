@@ -27,6 +27,7 @@ Package.onUse(function (api) {
 
 
     api.export('Tentacula', 'server');
+    api.export('W2V', 'server');
 });
 
 

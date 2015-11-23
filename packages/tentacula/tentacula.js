@@ -5,18 +5,17 @@ var path = Npm.require('path');
 
 
 class TentaculaClass {
-
     /**
      * Scrapping
      */
-    static scrapLinks(url, tag, callback){
-        if(typeof url !== 'string'){
+    static scrapLinks(url, tag, callback) {
+        if (typeof url !== 'string') {
             throw new Meteor.Error(500, 'Parameter url in scrapLinks hat to be a string.');
         }
-        if(typeof tag !== 'string'){
+        if (typeof tag !== 'string') {
             throw new Meteor.Error(500, 'Parameter tag in scrapLinks hat to be a string.');
         }
-        if(typeof callback !== 'function'){
+        if (typeof callback !== 'function') {
             throw new Meteor.Error(500, 'Parameter callback in scrapLinks hat to be a function.');
         }
         getLinks(url, tag, callback);
@@ -33,16 +32,15 @@ class TentaculaClass {
      * }]
      */
 
-    static scrapContent(url, elements){
-        if(typeof url !== 'string'){
+    static scrapContent(url, elements) {
+        if (typeof url !== 'string') {
             throw new Meteor.Error(500, 'Tentacula.scrapContent: Parameter url in scrapLinks hat to be a string.');
         }
-        if(!Array.isArray(elements)){
+        if (!Array.isArray(elements)) {
             throw new Meteor.Error(500, 'Tentacula.scrapContent: Parameter url in scrapLinks hat to be a string.');
         }
         return getContent(url, elements);
     }
-
 
 
     /**
@@ -91,11 +89,11 @@ class TentaculaClass {
         W2V.word2vec(inputPath, vectorPath, callback);
     }
 
-    static loadModel(callback){
+    static pathToVectorPath() {
         var dir = path.dirname('/w2v/'),
-            vectorPath = path.join(dir, 'vector-1.txt'),
-            newVectorModel = W2V.loadModel();
-        newVectorModel.readTxtFile(vectorPath, callback);
+            vectorPath = path.join(dir, 'vector-1.txt');
+        return vectorPath;
     }
 }
+W2V = {};
 Tentacula = TentaculaClass;

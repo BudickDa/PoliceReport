@@ -48,7 +48,7 @@ class ModelClass {
 
 
     getNearestWord(vector) {
-        if (vector instanceof WordVector === true) {
+        if (vector instanceof W2V.WordVector === true) {
             vector = vector.values;
         }
         vector = normalize(vector);
@@ -76,7 +76,7 @@ class ModelClass {
         var d, i, c, a;
 
         this.N = inputN || 10;
-        if (vector instanceof WordVector === true) {
+        if (vector instanceof W2V.WordVector === true) {
             vector = vector.values;
         }
         vector = normalize(vector);
@@ -295,10 +295,11 @@ class ModelClass {
     }
 
 
-    readTxtFile(file, callback) {
+    readTxtFile(file) {
         var instream = fs.createReadStream(file);
         var outstream = new stream();
         var readLineInterface = readline.createInterface(instream, outstream);
+        this.loaded = false;
         readLineInterface.on('line', (line)=> {
             var array = line.split(' ');
             if (array.length === 2) {
@@ -312,15 +313,14 @@ class ModelClass {
                 var values = _.map(array, (value)=> {
                     return parseFloat(value);
                 });
-                this.vocabular.push(new WordVector(word, values));
+                this.vocabular.push(new W2V.WordVector(word, values));
             }
         });
         readLineInterface.on('close', ()=>{
             this.loaded = true;
-            return callback(this);
-        })
+        });
 
     }
 }
 
-Model = ModelClass;
+W2V.Model = ModelClass;

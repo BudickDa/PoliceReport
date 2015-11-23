@@ -1,3 +1,8 @@
+var w2vModel = new W2V.Model();
+Meteor.startup(function () {
+    w2vModel.readTxtFile(Tentacula.pathToVectorPath());
+});
+
 Meteor.methods({
     empty: function () {
         Reports.remove({});
@@ -55,31 +60,35 @@ Meteor.methods({
         });
     },
     tagData: function () {
-        Tentacula.loadModel(function(wordModel){
-            var wordVectors = wordModel.getVectors(['Unterfranken', 'Polizeistation', 'Polizeiinspektion']);
-            var result = wordVectors[0].subtract( wordVectors[1] ).add( wordVectors[2] );
-            console.log( wordModel.getNearestWords(result, 10 ) );
-        });
+        if (w2vModel.loaded) {
+            var wordVectors = w2vModel.getVectors(['Unterfranken', 'Polizeistation', 'Polizeiinspektion']);
+            var result = wordVectors[0].subtract(wordVectors[1]).add(wordVectors[2]);
+            console.log(w2vModel.getNearestWords(result, 10));
+        } else {
+            console.log('Model has not been loaded yet.');
+            console.log(`${w2vModel.vocabular.length} / 34119`);
+        }
 
 
         /*
-        Reports.find().forEach((doc)=> {
-            Reports.update(doc._id, {$set: {processed: 'In Progress'}});
-            var tags = Tentacula.tagText(doc.headline, doc.text, Tags);
-            Reports.update(doc._id, {$push: {tags: tags}});
-            Reports.update(doc._id, {$set: {processed: 'Tagged'}});
-        });*/
+         Reports.find().forEach((doc)=> {
+         Reports.update(doc._id, {$set: {processed: 'In Progress'}});
+         var tags = Tentacula.tagText(doc.headline, doc.text, Tags);
+         Reports.update(doc._id, {$push: {tags: tags}});
+         Reports.update(doc._id, {$set: {processed: 'Tagged'}});
+         });*/
     },
-    learn: function(){
-        var text = '';
-        Reports.find().forEach((doc)=> {
-            var date = moment(doc.date).format('DD.MM.YYYY');
-            text += `${doc.headline}
-            Polizeistation: ${doc.station}, Datum: ${date},
-            ${doc.text} `;
-        });
-        Tentacula.learnFromText(text, function(code){
-            console.log(`Word2Vector finished with code: ${code}`);
-        });
+    learn: function () {
+        /*
+         var text = '';
+         Reports.find().forEach((doc)=> {
+         var date = moment(doc.date).format('DD.MM.YYYY');
+         text += `${doc.headline}
+         Polizeistation: ${doc.station}, Datum: ${date},
+         ${doc.text} `;
+         });
+         Tentacula.learnFromText(text, function(code){
+         console.log(`Word2Vector finished with code: ${code}`);
+         });*/
     }
 });
