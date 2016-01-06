@@ -20,11 +20,8 @@ Package.onUse(function (api) {
     api.addFiles('scrapper/get_html.js', 'server');
     api.addFiles('scrapper/scrap_html.js', 'server');
 
-    api.addFiles('word2vec/helper.js', 'server');
     api.addFiles('word2vec/model.js', 'server');
     api.addFiles('word2vec/wordVector.js', 'server');
-    api.addFiles('word2vec/word2vec.js', 'server');
-
 
     api.export('Tentacula', 'server');
     api.export('W2V', 'server');

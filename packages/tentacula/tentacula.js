@@ -3,6 +3,15 @@ var stem = Npm.require('snowball-german');
 var fs = Npm.require('fs');
 var path = Npm.require('path');
 
+var sortDistance = function (a, b) {
+    if (a.distance < b.distance) {
+        return 1;
+    }
+    if (a.distance > b.distance) {
+        return -1;
+    }
+    return 0;
+};
 
 class TentaculaClass {
     /**
@@ -20,6 +29,8 @@ class TentaculaClass {
         }
         getLinks(url, tag, callback);
     }
+
+
 
     /**
      *
@@ -40,6 +51,17 @@ class TentaculaClass {
             throw new Meteor.Error(500, 'Tentacula.scrapContent: Parameter url in scrapLinks hat to be a string.');
         }
         return getContent(url, elements);
+    }
+
+    static nameEntityRecognition(text, entities){
+        var result = [];
+        _.forEach(entities, (entity)=>{
+            if(_.indexOf(text, entity)!=-1){
+                console.log('Found: ', entity);
+                result.push(entity);
+            }
+        });
+        return result;
     }
 
 

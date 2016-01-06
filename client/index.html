@@ -14,13 +14,18 @@
 </body>
 
 <template name="index">
-    <button id="loadData">Refresh Reports</button>
-    <button id="mineData">Mine Data</button>
+    <button id="load-data">Scrap Reports</button>
+    <button id="name-entity-recognition">Name Entity Recognition</button>
+    <button id="word2vec">...</button>
     {{#if isLoading}}
         {{counter}}
         {{>loading}}
     {{else}}
         <div class="container-fluid">
+            <div class="row">
+                <div class="col-xs-2">{{categorisedCount}}/{{elementCount}} => {{categorisedPercent}} %</div>
+                <div class="col-xs-2"></div>
+            </div>
             <div class="row">
                 <div class="col-xs-4">Headline</div>
                 <div class="col-xs-3">Date</div>
@@ -38,7 +43,11 @@
     <div class="row">
         <div class="col-xs-4">{{headline}}</div>
         <div class="col-xs-2">{{date timestamp}}</div>
-        <div class="col-xs-2">{{location}}</div>
+        {{#if location_detail}}
+            <div class="col-xs-2">{{location_detail.city}}</div>
+        {{else}}
+            <div class="col-xs-2">{{location}}</div>
+        {{/if}}
         <div class="col-xs-2">{{station}}</div>
         <div class="col-xs-1">{{processed}}</div>
         <div class="col-xs-1">

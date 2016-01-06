@@ -24,3 +24,6 @@ budickda:tentacula
 
 kadira:flow-router
 kadira:blaze-layout
+
+#Batch inserts
+mikowals:batch-insert

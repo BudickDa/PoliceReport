@@ -29,5 +29,10 @@ class WordVectorClass {
             return new W2V.WordVector(null, values);
         }
     }
+
+    normalize() {
+        var normalizeFnc = Npm.require('vectors/normalize')(this.values.length)
+        this.values = normalizeFnc(this.values);
+    }
 }
 W2V.WordVector = WordVectorClass;
