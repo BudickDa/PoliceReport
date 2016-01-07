@@ -8,7 +8,7 @@ Template.registerHelper('date', function (timestamp) {
 
 Template.index.helpers({
     reports: function () {
-        return Reports.find({location: {$ne: false}});
+        return Reports.find();
     },
     isLoading: function () {
         return Reports.find().count() < config.datasets && Reports.find().count() !== 0;
@@ -20,12 +20,11 @@ Template.index.helpers({
         return Reports.find({location: {$ne: false}}).count();
     },
     categorisedCount: function () {
-        return Reports.find({category: {$ne: ''}}).count();
+        return Reports.find({processed: 'Categorised'}).count();
     },
     categorisedPercent: function () {
-        if (Reports.find({category: {$ne: ''}}).count() !== 0) {
-            return Reports.find({category: {$ne: ''}}).count() / Reports.find({location: {$ne: false}}).count();
-        }
+        if (Reports.find().count() !== 0) {
+            return Math.floor(Reports.find({processed:  'Categorised'}).count() / Reports.find().count()*1000)/10;}
         return 0;
     }
 });
@@ -39,36 +38,18 @@ Template.details.helpers({
 /**
  * Search page
  */
-function searchPage(start, count) {
-
-
-
+function searchPage(start) {
     start = start || 0;
-    count = count || config.datasets;
-    var max = start + count,
-        missedReports = 0,
-        running = 0;
-    for (var i = start; i < max; i += 10) {
-        running++;
-        Meteor.call('getText', `https://www.polizei.bayern.de/bepo/news/presse/archiv/index.html?type=archiv&rubid=rub-4&query=&submit=Suchen%21&periodselect=All&period=fromto&periodfrom=01.01.2010&periodto=${moment().format('DD.MM.YYYY')}&start=${i}`, function (err, missed) {
-            if (err) {
-                console.error(err.error, err.message);
-            }
-            missedReports += missed;
-            running--;
-            console.log('Running processes: ', running);
-        });
-    }
-    var interval = Meteor.setInterval(function () {
-        console.log(running);
-        if (running === 0) {
-            Meteor.clearInterval(interval);
-            console.log('Final missed reports: ', missedReports);
-            if (missedReports > 0) {
-                searchPage(max, missedReports);
-            }
+    Meteor.call('getText', `https://www.polizei.bayern.de/bepo/news/presse/archiv/index.html?type=archiv&rubid=rub-4&query=&submit=Suchen%21&periodselect=All&period=fromto&periodfrom=01.01.2010&periodto=${moment().format('DD.MM.YYYY')}&start=${start}`, function (err, finished) {
+        if (err) {
+            console.error(err.error, err.message);
         }
-    }, 250);
+        if (Reports.find().count() < config.datasets || (config.datasets === -1 && !finished)) {
+            return searchPage(start + 10);
+        } else {
+            console.log('All reports scrapped.');
+        }
+    });
 }
 
 /**
@@ -76,7 +57,7 @@ function searchPage(start, count) {
  */
 Template.index.events({
     'click #name-entity-recognition': function () {
-        Meteor.call('nameEntityRecognition');
+        Meteor.call('saveNameEntityRecognition');
     },
     'click #word2vec': function () {
         Meteor.call('word2vec');
@@ -85,3 +66,6 @@ Template.index.events({
         Meteor.call('empty', searchPage);
     }
 });
+
+
+

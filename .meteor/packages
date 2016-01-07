@@ -25,5 +25,7 @@ budickda:tentacula
 kadira:flow-router
 kadira:blaze-layout
 
+dburles:google-maps
+
 #Batch inserts
 mikowals:batch-insert

@@ -14,6 +14,7 @@ Package.onUse(function (api) {
     api.versionsFrom('1.2.0.2');
     api.use('ecmascript');
     api.use('underscore');
+    api.use('check');
 
     api.addFiles('tentacula.js', 'server');
 
@@ -30,6 +31,7 @@ Package.onUse(function (api) {
 
 Package.onTest(function (api) {
     api.use('ecmascript');
+    api.use('check');
     api.use('tinytest');
     api.use('tentacula');
     api.addFiles('tentacula-tests.js');
@@ -39,6 +41,7 @@ Package.onTest(function (api) {
 Npm.depends({
     'snowball-german': '1.0.0',
     'vectors': '0.1.0',
-    'cheerio': '0.19.0'
+    'cheerio': '0.19.0',
+    'fuzzy': '0.1.1'
 });
 

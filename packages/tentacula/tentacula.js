@@ -2,6 +2,7 @@
 var stem = Npm.require('snowball-german');
 var fs = Npm.require('fs');
 var path = Npm.require('path');
+var fuzzy = Npm.require('fuzzy');
 
 var sortDistance = function (a, b) {
     if (a.distance < b.distance) {
@@ -53,14 +54,29 @@ class TentaculaClass {
         return getContent(url, elements);
     }
 
+    /**
+     * Returns the entity with the highest score found in text
+     * @param text
+     * @param entities
+     * @returns {{entity: string, score: number}}
+     */
     static nameEntityRecognition(text, entities){
-        var result = [];
+        check(text, String);
+        text = JSON.parse(JSON.stringify(text));
+        var result = {
+            entity: '',
+            score: 1000
+        };
         _.forEach(entities, (entity)=>{
-            if(_.indexOf(text, entity)!=-1){
-                console.log('Found: ', entity);
-                result.push(entity);
+            var needle = fuzzy.match(entity,text);
+            if(needle && needle.score>result.score){
+                result.score = needle.score;
+                result.entity = entity;
             }
         });
+        if(result.entity===''){
+            return null;
+        }
         return result;
     }
 

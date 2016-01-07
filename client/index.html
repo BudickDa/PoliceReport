@@ -27,35 +27,40 @@
                 <div class="col-xs-2"></div>
             </div>
             <div class="row">
-                <div class="col-xs-4">Headline</div>
-                <div class="col-xs-3">Date</div>
-                <div class="col-xs-3">Station</div>
-                <div class="col-xs-2">Processed</div>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Headline</th>
+                        <th>Date</th>
+                        <th>City</th>
+                        <th>Station</th>
+                        <th>Processed</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#each reports}}
+                        {{>report}}
+                    {{/each}}
+                    </tbody>
+                </table>
             </div>
-            {{#each reports}}
-                {{>report}}
-            {{/each}}
         </div>
     {{/if}}
 </template>
 
 <template name="report">
-    <div class="row">
-        <div class="col-xs-4">{{headline}}</div>
-        <div class="col-xs-2">{{date timestamp}}</div>
-        {{#if location_detail}}
-            <div class="col-xs-2">{{location_detail.city}}</div>
-        {{else}}
-            <div class="col-xs-2">{{location}}</div>
-        {{/if}}
-        <div class="col-xs-2">{{station}}</div>
-        <div class="col-xs-1">{{processed}}</div>
-        <div class="col-xs-1">
+    <tr>
+        <td>{{headline}}</td>
+        <td>{{date timestamp}}</td>
+        <td>{{location_detail.city}}</td>
+        <td>{{station}}</td>
+        <td>{{processed}}</td>
+        <td>
             <a href="/details/{{_id}}">Details</a>
             <a href="{{url}}"
                target="_blank">Original</a>
-        </div>
-    </div>
+        </td>
+    </tr>
 </template>
 
 <template name="details">
@@ -66,16 +71,20 @@
 
         <h2>{{date}}, Station: {{station}}</h2>
 
+        <address>
+            {{location_detail.zip}} {{location_detail.city}}, {{location_detail.state}}
+        </address>
+
         <p>{{{text}}}</p>
 
-        <h3>Tags:</h3>
-
-        <p>
-            {{#each tags}}
-                {{this}}
-            {{/each}}
-        </p>
+        <h3>Category: <b>{{category.entity}}</b> (Score: {{category.score}})</h3>
     {{/with}}
+</template>
+
+<template name="map">
+    <div class="map-container">
+        {{> googleMap name="map" options=mapOptions}}
+    </div>
 </template>
 
 <template name="loading">
