@@ -8,7 +8,7 @@ Template.registerHelper('date', function (timestamp) {
 
 Template.index.helpers({
     reports: function () {
-        return Reports.find();
+        return Reports.find({}, {limit: 800});
     },
     isLoading: function () {
         return Reports.find().count() < config.datasets && Reports.find().count() !== 0;
@@ -59,8 +59,8 @@ Template.index.events({
     'click #name-entity-recognition': function () {
         Meteor.call('saveNameEntityRecognition');
     },
-    'click #word2vec': function () {
-        Meteor.call('word2vec');
+    'click #bagOfWords': function () {
+        Meteor.call('bagOfWords');
     },
     'click #load-data': function () {
         Meteor.call('empty', searchPage);

@@ -32,7 +32,6 @@ class TentaculaClass {
     }
 
 
-
     /**
      *
      *
@@ -60,21 +59,21 @@ class TentaculaClass {
      * @param entities
      * @returns {{entity: string, score: number}}
      */
-    static nameEntityRecognition(text, entities){
+    static nameEntityRecognition(text, entities) {
         check(text, String);
         text = JSON.parse(JSON.stringify(text));
         var result = {
             entity: '',
             score: 1000
         };
-        _.forEach(entities, (entity)=>{
-            var needle = fuzzy.match(entity,text);
-            if(needle && needle.score>result.score){
+        _.forEach(entities, (entity)=> {
+            var needle = fuzzy.match(entity, text);
+            if (needle && needle.score > result.score) {
                 result.score = needle.score;
                 result.entity = entity;
             }
         });
-        if(result.entity===''){
+        if (result.entity === '') {
             return null;
         }
         return result;
@@ -132,6 +131,25 @@ class TentaculaClass {
             vectorPath = path.join(dir, 'vector-1.txt');
         return vectorPath;
     }
+
+    /**
+     * creates a bag of words object from a text by tokenisation.
+     * @param text
+     * @returns {{}}
+     */
+    static createBagOfWords(text) {
+        check(text, String);
+        var tokens = text.match(/[\w\u00C0-\u00ff]+/g), bagOfWords = {};
+        tokens.forEach((token)=> {
+            if (bagOfWords[token]) {
+                bagOfWords[token]++;
+            } else {
+                bagOfWords[token] = 1;
+            }
+        });
+        return bagOfWords;
+    }
 }
 W2V = {};
 Tentacula = TentaculaClass;
+TentaculaClass.fuzzy = fuzzy;
