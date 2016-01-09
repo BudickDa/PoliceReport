@@ -59,6 +59,9 @@ Template.index.events({
     'click #name-entity-recognition': function () {
         Meteor.call('saveNameEntityRecognition');
     },
+    'click #w2v-name-entity-recognition': function(){
+        Meteor.call('synonymNameEntityRecognition');
+    },
     'click #bagOfWords': function () {
         Meteor.call('bagOfWords');
     },

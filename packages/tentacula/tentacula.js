@@ -1,5 +1,3 @@
-//algorithm to stem word
-var stem = Npm.require('snowball-german');
 var fs = Npm.require('fs');
 var path = Npm.require('path');
 var fuzzy = Npm.require('fuzzy');
@@ -13,6 +11,9 @@ var sortDistance = function (a, b) {
     }
     return 0;
 };
+
+
+
 
 class TentaculaClass {
     /**
@@ -79,35 +80,70 @@ class TentaculaClass {
         return result;
     }
 
-
     /**
-     * Tags a text with the possible tags. Returns the tags as array.
-     * @param text {String}
-     * @param tags {name: {String}, keywords: {Array}}
-     * @returns {Array}
+     * Returns the entity with the highest score found in text
+     * Uses a synonym-object to get variations of each entity
+     * @param text
+     * @param entities
+     * @returns {{entity: string, score: number}}
      */
-    static tagText(headline, text, tags) {
-        var result = [];
-
-        /*tags.forEach((tag)=> {
-         var found = false;
-         tag.keywords.forEach((keyword)=> {
-         if (found) {
-         return;
-         }
-         var stemmedKeyword = stem(keyword);
-         if (headline.includes(stemmedKeyword)) {
-         found = true;
-         } else if (text.includes(stemmedKeyword)) {
-         found = true;
-         }
-         if (found) {
-         result.push(tag.name);
-         }
-         });
-         });*/
+    static synonymNameEntityRecognition(text, entities, synonyms) {
+        check(text, String);
+        text = JSON.parse(JSON.stringify(text));
+        var result = {
+            entity: '',
+            score: 0
+        };
+        _.forEach(entities, (entity)=> {
+            console.log('Verbrechen: ', entity);
+            var score = 0;
+            _.forEach(synonyms[entity], (word)=> {
+                console.log(word);
+                var needle = fuzzy.match(word, text);
+                if (needle) {
+                    score += needle.score;
+                }
+            });
+            if (score > result.score) {
+                result.score = score;
+                result.entity = entity;
+            }
+        });
         return result;
     }
+
+    /**
+     * Returns the entity with the highest score found in text
+     * Uses W2V to get variations of each entity
+     * @param text
+     * @param entities
+     * @returns {{entity: string, score: number}}
+     */
+    static vectorNameEntityRecognition(text, entities, vector) {
+        check(text, String);
+        text = JSON.parse(JSON.stringify(text));
+        var result = {
+            entity: '',
+            score: 1000
+        };
+        _.forEach(entities, (entity)=> {
+            console.log('Verbrechen: ', entity);
+            _.forEach(vector.getNearestWords(entity, 5), (synomymObject)=> {
+                var synomym = synomymObject.word;
+                console.log(synomym);
+                var needle = fuzzy.match(synomym, text);
+                if (needle && needle.score > result.score) {
+                    result.score = needle.score;
+                    result.entity = entity;
+                }
+            });
+        });
+        if (result.entity === '') {
+            return null;
+        }
+        return result;
+    }
+
 
     static learnFromText(text, callback) {
         var dir = path.dirname('/w2v/');
