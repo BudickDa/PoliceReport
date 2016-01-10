@@ -26,6 +26,11 @@ Template.index.helpers({
         if (Reports.find().count() !== 0) {
             return Math.floor(Reports.find({processed:  'Categorised'}).count() / Reports.find().count()*1000)/10;}
         return 0;
+    },
+    unsafeCategorisedPercent: function () {
+        if (Reports.find().count() !== 0) {
+            return Math.floor(Reports.find({processed:  {$ne: 'Not categorised'}}).count() / Reports.find().count()*1000)/10;}
+        return 0;
     }
 });
 

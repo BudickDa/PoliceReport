@@ -26,6 +26,7 @@ kadira:flow-router
 kadira:blaze-layout
 
 dburles:google-maps
+chart:chart
 
 #Batch inserts
 mikowals:batch-insert

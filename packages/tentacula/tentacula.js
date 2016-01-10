@@ -95,10 +95,13 @@ class TentaculaClass {
             score: 0
         };
         _.forEach(entities, (entity)=> {
-            console.log('Verbrechen: ', entity);
             var score = 0;
+            var dictionary = [];
+            if(synonyms[entity]){
+                dictionary = synonyms[entity];
+            }
+            dictionary.push(entity);
             _.forEach(synonyms[entity], (word)=> {
-                console.log(word);
                 var needle = fuzzy.match(word, text);
                 if (needle) {
                     score += needle.score;
@@ -127,10 +130,8 @@ class TentaculaClass {
             score: 1000
         };
         _.forEach(entities, (entity)=> {
-            console.log('Verbrechen: ', entity);
             _.forEach(vector.getNearestWords(entity, 5), (synomymObject)=> {
                 var synomym = synomymObject.word;
-                console.log(synomym);
                 var needle = fuzzy.match(synomym, text);
                 if (needle && needle.score > result.score) {
                     result.score = needle.score;
