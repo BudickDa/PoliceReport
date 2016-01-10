@@ -5,7 +5,7 @@
 
 <template name="mainLayout">
     <div class="container">
-        <h1>PoliceReport</h1>
+        {{>navbar}}
         {{>Template.dynamic template=content}}
     </div>
 </template>
@@ -14,37 +14,58 @@
 </body>
 
 <template name="index">
+    <button id="load-data">Scrap Reports</button>
+    <button id="reset-data">Reset</button>
+    {{#if password}}<input id="password" type="password"/><button id="reset-data-confirm">Confirm</button>{{/if}}
+    <button id="name-entity-recognition">Name Entity Recognition</button>
+    <button id="w2v-name-entity-recognition">Synonym Name Entity Recognition</button>
+    <!--<button id="bagOfWords">Bag of words</button>-->
     {{#if isLoading}}
+        Scrapped: {{counter}}
         {{>loading}}
     {{else}}
-        <button id="loadData">Refresh Reports</button>
-        <button id="mineData">Mine Data</button>
         <div class="container-fluid">
             <div class="row">
-                <div class="col-xs-4">Headline</div>
-                <div class="col-xs-3">Date</div>
-                <div class="col-xs-3">Station</div>
-                <div class="col-xs-2">Processed</div>
+                <div class="col-xs-2">Categorised: {{categorisedCount}}/{{elementCount}} => {{categorisedPercent}} % ({{unsafeCategorisedPercent}} %)</div>
+                <div class="col-xs-2"></div>
             </div>
-            {{#each reports}}
-                {{>report}}
-            {{/each}}
+            <div class="row">
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Headline</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th>City</th>
+                        <th>Station</th>
+                        <th>Processed</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#each reports}}
+                        {{>report}}
+                    {{/each}}
+                    </tbody>
+                </table>
+            </div>
         </div>
     {{/if}}
 </template>
 
 <template name="report">
-    <div class="row">
-        <div class="col-xs-4">{{headline}}</div>
-        <div class="col-xs-3">{{date}}</div>
-        <div class="col-xs-3">{{station}}</div>
-        <div class="col-xs-1">{{processed}}</div>
-        <div class="col-xs-1">
+    <tr>
+        <td>{{headline}}</td>
+        <td>{{#if category.entity}}{{category.entity}} (Score: {{category.score}}){{/if}}</td>
+        <td>{{date timestamp}}</td>
+        <td>{{location_detail.city}}</td>
+        <td>{{station}}</td>
+        <td>{{processed}}</td>
+        <td>
             <a href="/details/{{_id}}">Details</a>
-            <a href="https://www.polizei.bayern.de/bepo/news/presse/aktuell/index.html/{{key}}"
+            <a href="{{url}}"
                target="_blank">Original</a>
-        </div>
-    </div>
+        </td>
+    </tr>
 </template>
 
 <template name="details">
@@ -55,16 +76,20 @@
 
         <h2>{{date}}, Station: {{station}}</h2>
 
+        <address>
+            {{location_detail.zip}} {{location_detail.city}}, {{location_detail.state}}
+        </address>
+
         <p>{{{text}}}</p>
 
-        <h3>Tags:</h3>
-
-        <p>
-            {{#each tags}}
-                {{this}}
-            {{/each}}
-        </p>
+        <h3>Category: <b>{{category.entity}}</b> (Score: {{category.score}})</h3>
     {{/with}}
+</template>
+
+<template name="map">
+    <div class="map-container">
+        {{> googleMap name="map" options=mapOptions}}
+    </div>
 </template>
 
 <template name="loading">
@@ -162,4 +187,36 @@
         <div class="sk-cube sk-cube8"></div>
         <div class="sk-cube sk-cube9"></div>
     </div>
+</template>
+
+<template name="navbar">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">PoliceReport</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/map">Map (WIP)</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Statistics <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/stats">Burglary</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/impressum">Impressum</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="https://github.com/BudickDa/PoliceReport" target="_blank">GitHub</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 </template>

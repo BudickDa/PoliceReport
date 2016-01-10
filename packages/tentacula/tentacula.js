@@ -1,62 +1,192 @@
-// Write your package code here!
+var fs = Npm.require('fs');
+var path = Npm.require('path');
+var fuzzy = Npm.require('fuzzy');
+
+var sortDistance = function (a, b) {
+    if (a.distance < b.distance) {
+        return 1;
+    }
+    if (a.distance > b.distance) {
+        return -1;
+    }
+    return 0;
+};
+
+
+
 
 class TentaculaClass {
     /**
-     * Declinates a word and returns its variation in an array
-     * @param word
-     * @returns {Array}
+     * Scrapping
      */
-    static declinate(word) {
-        var words = [], tmp;
-        words.push(word);
-        words.push(`${word}e`);
-        words.push(`${word}er`);
-        words.push(`${word}en`);
-        words.push(`${word}em`);
-        words.push(`${word}in`);
-        words.push(`${word}innen`);
-        words.push(`${word}a`);
-        tmp = words;
-        tmp.forEach((w)=> {
-            words.push(w.toUpperCase());
-            words.push(w.toLowerCase());
-        });
+    static scrapLinks(url, tag, callback) {
+        if (typeof url !== 'string') {
+            throw new Meteor.Error(500, 'Parameter url in scrapLinks hat to be a string.');
+        }
+        if (typeof tag !== 'string') {
+            throw new Meteor.Error(500, 'Parameter tag in scrapLinks hat to be a string.');
+        }
+        if (typeof callback !== 'function') {
+            throw new Meteor.Error(500, 'Parameter callback in scrapLinks hat to be a function.');
+        }
+        getLinks(url, tag, callback);
+    }
 
-        return words;
+
+    /**
+     *
+     *
+     * @param url
+     * @param elements [{
+     *  name: string,
+     *  tag: string,
+     *  multiple: Boolean
+     * }]
+     */
+
+    static scrapContent(url, elements) {
+        if (typeof url !== 'string') {
+            throw new Meteor.Error(500, 'Tentacula.scrapContent: Parameter url in scrapLinks hat to be a string.');
+        }
+        if (!Array.isArray(elements)) {
+            throw new Meteor.Error(500, 'Tentacula.scrapContent: Parameter url in scrapLinks hat to be a string.');
+        }
+        return getContent(url, elements);
     }
 
     /**
-     * Tags a text with the possible tags. Returns the tags as array.
-     * @param text {String}
-     * @param tags {name: {String}, keywords: {Array}}
-     * @returns {Array}
+     * Returns the entity with the highest score found in text
+     * @param text
+     * @param entities
+     * @returns {{entity: string, score: number}}
      */
-    static tagText(headline, text, tags) {
-        var result = [];
-        tags.forEach((tag)=> {
-            var found = false;
-            tag.keywords.forEach((keyword)=> {
-                if (found) {
-                    return;
-                }
-                var declinations = Tentacula.declinate(keyword);
-                declinations.forEach((declination)=>{
-                    if (found) {
-                        return;
-                    }
-                    if (headline.includes(keyword)) {
-                        found = true;
-                    } else if (text.includes(keyword)) {
-                        found = true;
-                    }
-                    if (found) {
-                        result.push(tag.name);
-                    }
-                })
+    static nameEntityRecognition(text, entities) {
+        check(text, String);
+        text = JSON.parse(JSON.stringify(text));
+        var result = {
+            entity: '',
+            score: 1000
+        };
+        _.forEach(entities, (entity)=> {
+            var needle = fuzzy.match(entity, text);
+            if (needle && needle.score > result.score) {
+                result.score = needle.score;
+                result.entity = entity;
+            }
+        });
+        if (result.entity === '') {
+            return null;
+        }
+        return result;
+    }
 
-            })
+    /**
+     * Returns the entity with the highest score found in text
+     * Uses a synonym-object to get variations of each entity
+     * @param text
+     * @param entities
+     * @returns {{entity: string, score: number}}
+     */
+    static synonymNameEntityRecognition(text, entities, synonyms) {
+        check(text, String);
+        text = JSON.parse(JSON.stringify(text));
+        var result = {
+            entity: '',
+            score: 0
+        };
+        _.forEach(entities, (entity)=> {
+            var score = 0;
+            var dictionary = [];
+            if(synonyms[entity]){
+                dictionary = synonyms[entity];
+            }
+            dictionary.push(entity);
+            _.forEach(synonyms[entity], (word)=> {
+                var needle = fuzzy.match(word, text);
+                if (needle) {
+                    score += needle.score;
+                }
+            });
+            if (score > result.score) {
+                result.score = score;
+                result.entity = entity;
+            }
         });
         return result;
     }
+
+    /**
+     * Returns the entity with the highest score found in text
+     * Uses W2V to get variations of each entity
+     * @param text
+     * @param entities
+     * @returns {{entity: string, score: number}}
+     */
+    static vectorNameEntityRecognition(text, entities, vector) {
+        check(text, String);
+        text = JSON.parse(JSON.stringify(text));
+        var result = {
+            entity: '',
+            score: 1000
+        };
+        _.forEach(entities, (entity)=> {
+            _.forEach(vector.getNearestWords(entity, 5), (synomymObject)=> {
+                var synomym = synomymObject.word;
+                var needle = fuzzy.match(synomym, text);
+                if (needle && needle.score > result.score) {
+                    result.score = needle.score;
+                    result.entity = entity;
+                }
+            });
+        });
+        if (result.entity === '') {
+            return null;
+        }
+        return result;
+    }
+
+
+    static learnFromText(text, callback) {
+        var dir = path.dirname('/w2v/');
+        var inputPath = path.join(dir, 'input.txt');
+        //write text to file:
+        fs.closeSync(fs.openSync(inputPath, 'w'));
+        fs.writeFileSync(inputPath, text);
+
+
+        if (!params) {
+            params = {};
+        }
+
+        var vectorPath = path.join(dir, 'vector-1.txt');
+        fs.closeSync(fs.openSync(vectorPath, 'w'));
+        W2V.word2vec(inputPath, vectorPath, callback);
+    }
+
+    static pathToVectorPath() {
+        var dir = path.dirname('/w2v/'),
+            vectorPath = path.join(dir, 'vector-1.txt');
+        return vectorPath;
+    }
+
+    /**
+     * creates a bag of words object from a text by tokenisation.
+     * @param text
+     * @returns {{}}
+     */
+    static createBagOfWords(text) {
+        check(text, String);
+        var tokens = text.match(/[\w\u00C0-\u00ff]+/g), bagOfWords = {};
+        tokens.forEach((token)=> {
+            if (bagOfWords[token]) {
+                bagOfWords[token]++;
+            } else {
+                bagOfWords[token] = 1;
+            }
+        });
+        return bagOfWords;
+    }
 }
+W2V = {};
 Tentacula = TentaculaClass;
+TentaculaClass.fuzzy = fuzzy;
