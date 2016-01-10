@@ -5,7 +5,7 @@
 
 <template name="mainLayout">
     <div class="container">
-        <h1>PoliceReport</h1>
+        {{>navbar}}
         {{>Template.dynamic template=content}}
     </div>
 </template>
@@ -15,9 +15,11 @@
 
 <template name="index">
     <button id="load-data">Scrap Reports</button>
+    <button id="reset-data">Reset</button>
+    {{#if password}}<input id="password" type="password"/><button id="reset-data-confirm">Confirm</button>{{/if}}
     <button id="name-entity-recognition">Name Entity Recognition</button>
     <button id="w2v-name-entity-recognition">Synonym Name Entity Recognition</button>
-    <button id="bagOfWords">Bag of words</button>
+    <!--<button id="bagOfWords">Bag of words</button>-->
     {{#if isLoading}}
         Scrapped: {{counter}}
         {{>loading}}
@@ -185,4 +187,36 @@
         <div class="sk-cube sk-cube8"></div>
         <div class="sk-cube sk-cube9"></div>
     </div>
+</template>
+
+<template name="navbar">
+    <nav class="navbar navbar-default">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/">PoliceReport</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/map">Map (WIP)</a></li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Statistics <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li><a href="/stats">Burglary</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="/impressum">Impressum</a></li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="https://github.com/BudickDa/PoliceReport" target="_blank">GitHub</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 </template>
