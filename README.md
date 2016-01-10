@@ -69,3 +69,7 @@ Speyerer Straße 1
 90443 Nürnberg
 
 E-Mail: daniel@budick.eu
+
+
+#Important
+If you want to deploy this app, change the impressum first!
