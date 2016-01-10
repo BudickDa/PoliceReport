@@ -39,7 +39,6 @@ Package.onTest(function (api) {
 
 
 Npm.depends({
-    'snowball-german': '1.0.0',
     'vectors': '0.1.0',
     'cheerio': '0.19.0',
     'fuzzy': '0.1.1'
