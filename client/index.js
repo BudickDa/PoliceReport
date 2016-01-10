@@ -8,7 +8,7 @@ Template.registerHelper('date', function (timestamp) {
 
 Template.index.helpers({
     reports: function () {
-        return Reports.find({}, {limit: 800});
+        return Reports.find();
     },
     isLoading: function () {
         return Reports.find().count() < config.datasets && Reports.find().count() !== 0;
