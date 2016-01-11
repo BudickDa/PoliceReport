@@ -19,7 +19,6 @@ Package.onUse(function (api) {
     api.addFiles('tentacula.js', 'server');
 
     api.addFiles('scrapper/get_html.js', 'server');
-    api.addFiles('scrapper/scrap_html.js', 'server');
 
     api.addFiles('word2vec/model.js', 'server');
     api.addFiles('word2vec/wordVector.js', 'server');
